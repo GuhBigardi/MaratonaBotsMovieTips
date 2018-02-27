@@ -18,15 +18,30 @@ namespace Botflix.Dialogs
         [LuisIntent("Cumprimento")]
         public async Task Cumprimento(IDialogContext context, LuisResult result)
         {
-            var qnaService = new QnAMakerService(new QnAMakerAttribute(qnaSubscriptionKey, qnaKnowledgebaseId, "Tente Novamente"));
+            var qnaService = new QnAMakerService(new QnAMakerAttribute(qnaSubscriptionKey, qnaKnowledgebaseId, "Buguei aqui, pera!  ¯＼(º_o)/¯"));
             var qnaMaker = new QnAMakerDialog(qnaService);
             await qnaMaker.MessageReceivedAsync(context, Awaitable.FromItem(ArgumentoStatic.Argument));
         }
 
+        [LuisIntent("Criticas")]
+        public async Task Criticas(IDialogContext context, LuisResult result)
+        {
+            var qnaService = new QnAMakerService(new QnAMakerAttribute(qnaSubscriptionKey, qnaKnowledgebaseId, "Buguei aqui, pera! ¯＼(º_o)/¯"));
+            var qnaMaker = new QnAMakerDialog(qnaService);
+            await qnaMaker.MessageReceivedAsync(context, Awaitable.FromItem(ArgumentoStatic.Argument));
+        }
+
+        [LuisIntent("Sugestao")]
+        public async Task Sugestao(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync($"Puts, ainda não sei dar sugestões (╯3╰)");
+        }
+
+
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync($"Desculpe, não consegui entender a frase {result.Query}");
+            await context.PostAsync($"Eita, não consegui entender a frase {result.Query}");
         }
     }
 }
