@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botflix", "Botflix\Botflix.csproj", "{A818BDC4-9C02-4B3D-A071-47A3FF10DCE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotMovieTips.API", "..\BotMovieTips\BotMovieTips.API\BotMovieTips.API.csproj", "{C75AC151-B037-479D-9EF8-D52264C0E0FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A818BDC4-9C02-4B3D-A071-47A3FF10DCE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A818BDC4-9C02-4B3D-A071-47A3FF10DCE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A818BDC4-9C02-4B3D-A071-47A3FF10DCE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C75AC151-B037-479D-9EF8-D52264C0E0FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C75AC151-B037-479D-9EF8-D52264C0E0FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C75AC151-B037-479D-9EF8-D52264C0E0FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C75AC151-B037-479D-9EF8-D52264C0E0FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
