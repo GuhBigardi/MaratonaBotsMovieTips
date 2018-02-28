@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
 using System.Configuration;
+using Microsoft.Bot.Builder.FormFlow;
 
 namespace Botflix.Dialogs
 {
@@ -26,17 +27,24 @@ namespace Botflix.Dialogs
         [LuisIntent("Criticas")]
         public async Task Criticas(IDialogContext context, LuisResult result)
         {
-            var qnaService = new QnAMakerService(new QnAMakerAttribute(qnaSubscriptionKey, qnaKnowledgebaseId, "Buguei aqui, pera! ¯＼(º_o)/¯"));
+            var qnaService = new QnAMakerService(new QnAMakerAttribute(qnaSubscriptionKey, qnaKnowledgebaseId, "Buguei aqui, calma! ¯＼(º_o)/¯"));
             var qnaMaker = new QnAMakerDialog(qnaService);
             await qnaMaker.MessageReceivedAsync(context, Awaitable.FromItem(ArgumentoStatic.Argument));
         }
 
         [LuisIntent("Sugestao")]
-        public async Task Sugestao(IDialogContext context, LuisResult result)
+        public void Sugestao(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync($"Puts, ainda não sei dar sugestões (╯3╰)");
+            FormDialog<Form.Sugestao> addressForm = new FormDialog<Form.Sugestao>(new Form.Sugestao(), Form.Sugestao.BuildForm, FormOptions.PromptInStart);
+            Form.Sugestao sugestao = new Form.Sugestao();
+            context.Call(addressForm, SugestaoFormCompleteAsync);
         }
 
+        private async Task SugestaoFormCompleteAsync(IDialogContext context, IAwaitable<Form.Sugestao> result)
+        {
+            var adress = await result;
+            context.Wait(MessageReceived);
+        }
 
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
