@@ -30,6 +30,8 @@ namespace Botflix.Model
         public bool video { get; set; }
         public float vote_average { get; set; }
         public int vote_count { get; set; }
+
+        public string image { get; set; }
     }
 
     public class Genre

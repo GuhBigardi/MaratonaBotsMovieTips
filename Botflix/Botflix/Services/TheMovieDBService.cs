@@ -44,11 +44,11 @@ namespace Botflix.Services
                 var resultString = await result.Content.ReadAsStringAsync();
                 var movieSearch = JsonConvert.DeserializeObject<MovieSearchResult>(resultString);
 
-                var movie =  await GetMovieById(movieSearch.results.FirstOrDefault().id);
+                var movie = await GetMovieById(movieSearch.results.FirstOrDefault().id);
 
                 return movie;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var resultString = MovieMock.Content;
                 var movie = JsonConvert.DeserializeObject<Movie>(resultString);
@@ -69,7 +69,7 @@ namespace Botflix.Services
 
                 var resultString = await result.Content.ReadAsStringAsync();
                 var movie = JsonConvert.DeserializeObject<Movie>(resultString);
-
+                movie.image = await GetMovieImage(id);
                 return movie;
             }
             catch (Exception ex)
@@ -78,6 +78,30 @@ namespace Botflix.Services
                 var movie = JsonConvert.DeserializeObject<Movie>(resultString);
 
                 return movie;
+            }
+        }
+
+        public async Task<string> GetMovieImage(int id)
+        {
+            var endpoint = $"/movie/{id}/images?api_key={subscriptionKey}&{language}";
+            HttpResponseMessage result;
+            try
+            {
+                result = await httpClient.GetAsync($"{URL}{endpoint}");
+                if (result.StatusCode != HttpStatusCode.OK)
+                    throw new HttpRequestException();
+
+                var resultString = await result.Content.ReadAsStringAsync();
+                var movie = JsonConvert.DeserializeObject<MovieImages>(resultString);
+
+                return "";
+            }
+            catch (Exception ex)
+            {
+                var resultString = MovieMock.Content;
+                var movie = JsonConvert.DeserializeObject<Movie>(resultString);
+
+                return "";
             }
         }
     }

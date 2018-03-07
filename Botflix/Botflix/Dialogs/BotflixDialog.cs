@@ -29,13 +29,8 @@ namespace Botflix.Dialogs
         [LuisIntent("Criticas")]
         public async Task Criticas(IDialogContext context, LuisResult result)
         {
-            //var qnaService = new
-            //    QnAMakerService(new QnAMakerAttribute(qnaSubscriptionKey, qnaKnowledgebaseId, "Buguei aqui, calma! ¯＼(º_o)/¯"));
-            //var qnaMaker = new QnAMakerDialog(qnaService);
-            //await qnaMaker.MessageReceivedAsync(context, Awaitable.FromItem(ArgumentoStatic.Argument));
             var message = context.MakeMessage();
             message.Text = result.Query;
-
             await context.Forward(new BaseQnaMakerDialog(), AfterQnaDialog, message, CancellationToken.None);
         }
 
@@ -49,7 +44,6 @@ namespace Botflix.Dialogs
         public async Task Sugestao(IDialogContext context, LuisResult result)
         {
             FormDialog<Form.Sugestao> sugestionForm = new FormDialog<Form.Sugestao>(new Form.Sugestao(), Form.Sugestao.BuildForm, FormOptions.PromptInStart);
-            Form.Sugestao sugestao = new Form.Sugestao();
             context.Call(sugestionForm, SugestaoFormCompleteAsync);
         }
 

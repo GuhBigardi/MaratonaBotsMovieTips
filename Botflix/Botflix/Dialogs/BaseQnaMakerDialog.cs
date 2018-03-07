@@ -14,7 +14,7 @@ namespace Botflix.Dialogs
     [Serializable]
     public class BaseQnaMakerDialog : QnAMakerDialog
     {
-        public BaseQnaMakerDialog() : base(GetNewService()){}
+        public BaseQnaMakerDialog() : base(GetNewService()) { }
 
         private static IQnAService[] GetNewService()
         {
@@ -32,12 +32,14 @@ namespace Botflix.Dialogs
             var question = answer.Questions.FirstOrDefault();
             TheMovieDBService movieService = new TheMovieDBService();
             var movie = await movieService.GetMovieByName(question.ToString());
+            if (movie != null)
+            {
+                var card = CreateCard(movie);
+                var msg = context.MakeMessage();
+                msg.Attachments.Add(card.ToAttachment());
 
-            var card = CreateCard(movie);
-            var msg = context.MakeMessage();
-            msg.Attachments.Add(card.ToAttachment());
-
-            await context.PostAsync(msg);
+                await context.PostAsync(msg);
+            }
         }
 
         private HeroCard CreateCard(Movie movie)
