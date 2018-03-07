@@ -5,17 +5,19 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
 using System.Configuration;
 using Microsoft.Bot.Builder.FormFlow;
+using Microsoft.Bot.Connector;
+using System.Threading;
 
 namespace Botflix.Dialogs
 {
     [Serializable]
     public class BotflixDialog : BaseLuisDialog<object>
     {
-       
+
         string qnaSubscriptionKey = ConfigurationManager.AppSettings["QnaSubscriptionKey"];
         string qnaKnowledgebaseId = ConfigurationManager.AppSettings["QnaKnowledgebaseId"];
 
-     
+
         [LuisIntent("Cumprimento")]
         public async Task Cumprimento(IDialogContext context, LuisResult result)
         {
@@ -27,17 +29,28 @@ namespace Botflix.Dialogs
         [LuisIntent("Criticas")]
         public async Task Criticas(IDialogContext context, LuisResult result)
         {
-            var qnaService = new QnAMakerService(new QnAMakerAttribute(qnaSubscriptionKey, qnaKnowledgebaseId, "Buguei aqui, calma! ¯＼(º_o)/¯"));
-            var qnaMaker = new QnAMakerDialog(qnaService);
-            await qnaMaker.MessageReceivedAsync(context, Awaitable.FromItem(ArgumentoStatic.Argument));
+            //var qnaService = new
+            //    QnAMakerService(new QnAMakerAttribute(qnaSubscriptionKey, qnaKnowledgebaseId, "Buguei aqui, calma! ¯＼(º_o)/¯"));
+            //var qnaMaker = new QnAMakerDialog(qnaService);
+            //await qnaMaker.MessageReceivedAsync(context, Awaitable.FromItem(ArgumentoStatic.Argument));
+            var message = context.MakeMessage();
+            message.Text = result.Query;
+
+            await context.Forward(new BaseQnaMakerDialog(), AfterQnaDialog, message, CancellationToken.None);
+        }
+
+        private async Task AfterQnaDialog(IDialogContext context, IAwaitable<IMessageActivity> result)
+        {
+            var messageHandled = await result;
+            context.Wait(MessageReceived);
         }
 
         [LuisIntent("Sugestao")]
-        public void Sugestao(IDialogContext context, LuisResult result)
+        public async Task Sugestao(IDialogContext context, LuisResult result)
         {
-            FormDialog<Form.Sugestao> addressForm = new FormDialog<Form.Sugestao>(new Form.Sugestao(), Form.Sugestao.BuildForm, FormOptions.PromptInStart);
+            FormDialog<Form.Sugestao> sugestionForm = new FormDialog<Form.Sugestao>(new Form.Sugestao(), Form.Sugestao.BuildForm, FormOptions.PromptInStart);
             Form.Sugestao sugestao = new Form.Sugestao();
-            context.Call(addressForm, SugestaoFormCompleteAsync);
+            context.Call(sugestionForm, SugestaoFormCompleteAsync);
         }
 
         private async Task SugestaoFormCompleteAsync(IDialogContext context, IAwaitable<Form.Sugestao> result)
