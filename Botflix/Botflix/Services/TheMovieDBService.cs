@@ -30,11 +30,12 @@ namespace Botflix.Services
 
         }
 
-        public async Task<Movie> GetMovieByName(string name)
+        public async Task<Media> GetMediaByName(string name, Category mediaType)
         {
             name = name.Replace(" ", "+");
-            var endpoint = $"/search/movie/?api_key={subscriptionKey}&{language}&query={name}";
+            var endpoint = $"/search/multi/?api_key={subscriptionKey}&{language}&query={name}";
             HttpResponseMessage result;
+            Media media = null;
             try
             {
                 result = await httpClient.GetAsync($"{URL}{endpoint}");
@@ -42,18 +43,17 @@ namespace Botflix.Services
                     throw new HttpRequestException();
 
                 var resultString = await result.Content.ReadAsStringAsync();
-                var movieSearch = JsonConvert.DeserializeObject<MovieSearchResult>(resultString);
+                var mediaSearch = JsonConvert.DeserializeObject<MediaSearchResult>(resultString);
+                if (mediaType != Category.anyway)
+                    media = mediaSearch.results.Where(x => x.media_type == mediaType.ToString()).FirstOrDefault();
+                else
+                    media = mediaSearch.results.FirstOrDefault();
 
-                var movie = await GetMovieById(movieSearch.results.FirstOrDefault().id);
-
-                return movie;
+                return media;
             }
             catch (Exception ex)
             {
-                var resultString = MovieMock.Content;
-                var movie = JsonConvert.DeserializeObject<Movie>(resultString);
-
-                return movie;
+                throw ex;
             }
         }
 
@@ -69,7 +69,6 @@ namespace Botflix.Services
 
                 var resultString = await result.Content.ReadAsStringAsync();
                 var movie = JsonConvert.DeserializeObject<Movie>(resultString);
-                movie.image = await GetMovieImage(id);
                 return movie;
             }
             catch (Exception ex)
@@ -81,28 +80,5 @@ namespace Botflix.Services
             }
         }
 
-        public async Task<string> GetMovieImage(int id)
-        {
-            var endpoint = $"/movie/{id}/images?api_key={subscriptionKey}&{language}";
-            HttpResponseMessage result;
-            try
-            {
-                result = await httpClient.GetAsync($"{URL}{endpoint}");
-                if (result.StatusCode != HttpStatusCode.OK)
-                    throw new HttpRequestException();
-
-                var resultString = await result.Content.ReadAsStringAsync();
-                var movie = JsonConvert.DeserializeObject<MovieImages>(resultString);
-
-                return "";
-            }
-            catch (Exception ex)
-            {
-                var resultString = MovieMock.Content;
-                var movie = JsonConvert.DeserializeObject<Movie>(resultString);
-
-                return "";
-            }
-        }
     }
 }

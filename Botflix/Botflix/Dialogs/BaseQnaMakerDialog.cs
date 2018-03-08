@@ -14,7 +14,22 @@ namespace Botflix.Dialogs
     [Serializable]
     public class BaseQnaMakerDialog : QnAMakerDialog
     {
-        public BaseQnaMakerDialog() : base(GetNewService()) { }
+        private Category category;
+        public BaseQnaMakerDialog(string category) : base(GetNewService())
+        {
+            switch (category)
+            {
+                case "serie":
+                    this.category = Category.tv;
+                    break;
+                case "filme":
+                    this.category = Category.movie;
+                    break;
+                default:
+                    this.category = Category.anyway;
+                    break;
+            }
+        }
 
         private static IQnAService[] GetNewService()
         {
@@ -29,29 +44,36 @@ namespace Botflix.Dialogs
         {
 
             var answer = result.Answers.FirstOrDefault();
-            var question = answer.Questions.FirstOrDefault();
-            TheMovieDBService movieService = new TheMovieDBService();
-            var movie = await movieService.GetMovieByName(question.ToString());
-            if (movie != null)
+            if (answer != null)
             {
-                var card = CreateCard(movie);
-                var msg = context.MakeMessage();
-                msg.Attachments.Add(card.ToAttachment());
+                var question = answer.Questions.FirstOrDefault();
+                TheMovieDBService movieService = new TheMovieDBService();
+                var media = await movieService.GetMediaByName(question.ToString(), category);
 
-                await context.PostAsync(msg);
+                if (media != null)
+                {
+                    var card = CreateCard(media);
+                    var msg = context.MakeMessage();
+                    msg.Attachments.Add(card.ToAttachment());
+
+                    await context.PostAsync(msg);
+
+                    context.Done<string>("Oi");
+
+                }
             }
         }
 
-        private HeroCard CreateCard(Movie movie)
+        private HeroCard CreateCard(Media media)
         {
             var heroCard = new HeroCard
             {
-                Title = movie.title,
-                Subtitle = movie.overview,
+                Title = media.title,
+                Subtitle = media.overview,
                 Images = new List<CardImage>
                 {
-                    new CardImage(movie.poster_path,
-                    movie.title)
+                    new CardImage(media.Image,
+                    media.title)
                 },
                 Buttons = new List<CardAction>
                 {
@@ -61,7 +83,7 @@ namespace Botflix.Dialogs
                         DisplayText = "Gostei",
                         Title = "Gostei",
                         Type = ActionTypes.PostBack,
-                        Value = true
+                        Value = "Gostei"
 
                     }
 

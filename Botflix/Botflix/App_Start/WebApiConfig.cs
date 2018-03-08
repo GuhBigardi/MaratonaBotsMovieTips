@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Autofac;
+using Botflix.Services;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -23,6 +25,10 @@ namespace Botflix
             };
 
             // Web API configuration and services
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterType<IBotMovieTipsService>()
+                .As<BotMovieTipsService>()
+                .SingleInstance();
 
             // Web API routes
             config.MapHttpAttributeRoutes();

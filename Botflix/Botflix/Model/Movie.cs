@@ -31,7 +31,7 @@ namespace Botflix.Model
         public float vote_average { get; set; }
         public int vote_count { get; set; }
 
-        public string image { get; set; }
+        public string Image { get => $"https://image.tmdb.org/t/p/w600_and_h900_bestv2{this.poster_path}"; }
     }
 
     public class Genre

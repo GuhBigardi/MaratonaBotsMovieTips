@@ -140,10 +140,13 @@
     </Compile>
     <Compile Include="Form\Sugestao.cs" />
     <Compile Include="Mocks\MovieMock.cs" />
+    <Compile Include="Model\FavoriteMedia.cs" />
     <Compile Include="Model\Movie.cs" />
     <Compile Include="Model\MovieImages.cs" />
-    <Compile Include="Model\MovieSearchResult.cs" />
+    <Compile Include="Model\MediaSearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BotMovieTipsService.cs" />
+    <Compile Include="Services\IBotMovieTipsService.cs" />
     <Compile Include="Services\TheMovieDBService.cs" />
   </ItemGroup>
   <ItemGroup>

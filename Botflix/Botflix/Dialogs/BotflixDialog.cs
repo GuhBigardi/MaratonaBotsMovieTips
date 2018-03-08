@@ -7,6 +7,8 @@ using System.Configuration;
 using Microsoft.Bot.Builder.FormFlow;
 using Microsoft.Bot.Connector;
 using System.Threading;
+using System.Linq;
+using Autofac;
 
 namespace Botflix.Dialogs
 {
@@ -26,12 +28,19 @@ namespace Botflix.Dialogs
             await qnaMaker.MessageReceivedAsync(context, Awaitable.FromItem(ArgumentoStatic.Argument));
         }
 
+        [LuisIntent("Favoritos")]
+        public async Task Favoritos(IDialogContext context, LuisResult result)
+        {
+            //var botMovieTipsService = Dependency
+        }
+
         [LuisIntent("Criticas")]
         public async Task Criticas(IDialogContext context, LuisResult result)
         {
+            var entitie = result?.Entities?.FirstOrDefault()?.Entity?.ToString();
             var message = context.MakeMessage();
             message.Text = result.Query;
-            await context.Forward(new BaseQnaMakerDialog(), AfterQnaDialog, message, CancellationToken.None);
+            await context.Forward(new BaseQnaMakerDialog(entitie), AfterQnaDialog, message, CancellationToken.None);
         }
 
         private async Task AfterQnaDialog(IDialogContext context, IAwaitable<IMessageActivity> result)
