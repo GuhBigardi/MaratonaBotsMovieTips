@@ -6,6 +6,11 @@ namespace BotMovieTips.API.Repositories
 {
     public class FavoriteMediaRepository
     {
+        public FavoriteMediaRepository()
+        {
+            if (FavoriteMoviesInstance == null)
+                FavoriteMoviesInstance = new List<FavoriteMedia>();
+        }
         public List<FavoriteMedia> FavoriteMoviesInstance { get; set; }
         public void Add(FavoriteMedia favoriteMedia)
         {

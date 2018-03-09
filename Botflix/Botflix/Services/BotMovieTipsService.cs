@@ -29,7 +29,7 @@ namespace Botflix.Services
 
         public async Task<List<FavoriteMedia>> GetFavoriteMedias(string idUser)
         {
-            var endpoint = $"/v1/AddFavorites/?idUser={idUser}";
+            var endpoint = $"/api/AddFavorites/?idUser={idUser}";
             HttpResponseMessage result;
             try
             {
@@ -49,7 +49,7 @@ namespace Botflix.Services
 
         public async Task<bool> SendFavoriteMedia(FavoriteMedia favoriteMedia)
         {
-            var endpoint = $"/v1/AddFavorites";
+            var endpoint = $"/api/AddFavorites";
             HttpResponseMessage response = await httpClient.PostAsJsonAsync($"{URL}{endpoint}", favoriteMedia).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
                 return true;

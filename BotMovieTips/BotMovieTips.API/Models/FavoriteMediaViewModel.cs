@@ -7,13 +7,16 @@ namespace BotMovieTips.API.Models
     {
         public FavoriteMediaViewModel(FavoriteMedia favoriteMedia)
         {
-            IdUser = favoriteMedia.IdUser;
-            IdMedia = favoriteMedia.IdMedia;
-            TransationDate = favoriteMedia.TransationDate;
+            if (favoriteMedia != null)
+            {
+                IdUser = favoriteMedia.IdUser;
+                IdMedia = favoriteMedia.IdMedia;
+                TransationDate = favoriteMedia.TransationDate;
+            }
         }
 
         public string IdUser { get; set; }
-        public int   IdMedia { get; set; }
+        public int IdMedia { get; set; }
         public DateTime TransationDate { get; set; }
     }
 }
