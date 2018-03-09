@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net;
@@ -30,12 +31,12 @@ namespace Botflix.Services
 
         }
 
-        public async Task<Media> GetMediaByName(string name, Category mediaType)
+        public async Task<MediaSearch> GetMediaByName(string name, Category mediaType)
         {
             name = name.Replace(" ", "+");
             var endpoint = $"/search/multi/?api_key={subscriptionKey}&{language}&query={name}";
             HttpResponseMessage result;
-            Media media = null;
+            MediaSearch media = null;
             try
             {
                 result = await httpClient.GetAsync($"{URL}{endpoint}");
@@ -77,6 +78,25 @@ namespace Botflix.Services
                 var movie = JsonConvert.DeserializeObject<Movie>(resultString);
 
                 return movie;
+            }
+        }
+        public async Task<List<Media>> GetRecommendation(int id)
+        {
+            var endpoint = $"/recommendations{id}?page=1&api_key={subscriptionKey}&{language}";
+            HttpResponseMessage result;
+            try
+            {
+                result = await httpClient.GetAsync($"{URL}{endpoint}");
+                if (result.StatusCode != HttpStatusCode.OK)
+                    throw new HttpRequestException();
+
+                var resultString = await result.Content.ReadAsStringAsync();
+                var recommendationResult = JsonConvert.DeserializeObject<RecommendationResult>(resultString);
+                return recommendationResult.results;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 

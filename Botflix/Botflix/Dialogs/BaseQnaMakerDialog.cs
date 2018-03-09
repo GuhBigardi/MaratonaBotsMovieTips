@@ -15,6 +15,7 @@ namespace Botflix.Dialogs
     public class BaseQnaMakerDialog : QnAMakerDialog
     {
         private Category category;
+        private string userId = "guhbigardi@gmail.com";
         public BaseQnaMakerDialog(string category) : base(GetNewService())
         {
             switch (category)
@@ -52,45 +53,18 @@ namespace Botflix.Dialogs
 
                 if (media != null)
                 {
-                    var card = CreateCard(media);
+                    var card = new CardPersonalized().CreateCard(media, userId);
                     var msg = context.MakeMessage();
                     msg.Attachments.Add(card.ToAttachment());
 
                     await context.PostAsync(msg);
 
-                    context.Done<string>("Oi");
+                    //context.Done<string>("Oi");
 
                 }
             }
         }
 
-        private HeroCard CreateCard(Media media)
-        {
-            var heroCard = new HeroCard
-            {
-                Title = media.title,
-                Subtitle = media.overview,
-                Images = new List<CardImage>
-                {
-                    new CardImage(media.Image,
-                    media.title)
-                },
-                Buttons = new List<CardAction>
-                {
-                    new CardAction
-                    {
-                        Text = "Gostei",
-                        DisplayText = "Gostei",
-                        Title = "Gostei",
-                        Type = ActionTypes.PostBack,
-                        Value = "Gostei"
-
-                    }
-
-                }
-            };
-
-            return heroCard;
-        }
+       
     }
 }

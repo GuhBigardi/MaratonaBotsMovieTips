@@ -9,6 +9,8 @@ using Microsoft.Bot.Connector;
 using System.Threading;
 using System.Linq;
 using Autofac;
+using Botflix.Services;
+using Botflix.Model;
 
 namespace Botflix.Dialogs
 {
@@ -18,7 +20,7 @@ namespace Botflix.Dialogs
 
         string qnaSubscriptionKey = ConfigurationManager.AppSettings["QnaSubscriptionKey"];
         string qnaKnowledgebaseId = ConfigurationManager.AppSettings["QnaKnowledgebaseId"];
-
+        string currentMedia = null;
 
         [LuisIntent("Cumprimento")]
         public async Task Cumprimento(IDialogContext context, LuisResult result)
@@ -31,7 +33,21 @@ namespace Botflix.Dialogs
         [LuisIntent("Favoritos")]
         public async Task Favoritos(IDialogContext context, LuisResult result)
         {
-            //var botMovieTipsService = Dependency
+            var userId = result?.Entities?.Where(x => x.Type == "userId").FirstOrDefault()?.Entity?.ToString();
+            var mediaId = result?.Entities?.Where(x => x.Type == "mediaId").FirstOrDefault()?.Entity?.ToString();
+
+            if (!(String.IsNullOrEmpty(userId) && String.IsNullOrEmpty(mediaId)))
+            {
+                var favoriteMedia = new FavoriteMedia()
+                {
+                    IdUser = userId,
+                    IdMedia = Convert.ToInt32(mediaId),
+                    TransationDate = DateTime.Now
+                };
+
+                var botMovieTipsService = new BotMovieTipsService();
+                await botMovieTipsService.SendFavoriteMedia(favoriteMedia);
+            }
         }
 
         [LuisIntent("Criticas")]
@@ -52,13 +68,37 @@ namespace Botflix.Dialogs
         [LuisIntent("Sugestao")]
         public async Task Sugestao(IDialogContext context, LuisResult result)
         {
-            FormDialog<Form.Sugestao> sugestionForm = new FormDialog<Form.Sugestao>(new Form.Sugestao(), Form.Sugestao.BuildForm, FormOptions.PromptInStart);
-            context.Call(sugestionForm, SugestaoFormCompleteAsync);
+            var movieService = new TheMovieDBService();
+            var botMovieTipsService = new BotMovieTipsService();
+            var userId = "guhbigardi@gmail.com";
+
+            var favoriteMedias = await botMovieTipsService.GetFavoriteMedias(userId);
+
+            if(favoriteMedias.Count < 0)
+                await context.PostAsync($@"Aaah, ainda não te conheço o suficiente para conseguir te indicar um filme que vc goste!  ¯\_(⊙︿⊙)_/¯");
+
+            int random = new Random().Next(favoriteMedias.Count);
+            var favoriteMediaChoiced = favoriteMedias[random];
+            var mediasRecommendated = await movieService.GetRecommendation(favoriteMediaChoiced.IdMedia);
+
+            var msg = context.MakeMessage();
+            foreach (var media in mediasRecommendated)
+            {
+                var card = new CardPersonalized().CreateCard(media, userId);
+                msg.Attachments.Add(card.ToAttachment());
+            }
+
+            await context.PostAsync(msg);
+
+
+            //Implementar Form @Migg
+            //FormDialog<Form.Sugestao> sugestionForm = new FormDialog<Form.Sugestao>(new Form.Sugestao(), Form.Sugestao.BuildForm, FormOptions.PromptInStart);
+            //context.Call(sugestionForm, SugestaoFormCompleteAsync);
         }
 
         private async Task SugestaoFormCompleteAsync(IDialogContext context, IAwaitable<Form.Sugestao> result)
         {
-            var adress = await result;
+            var sugest = await result;
             context.Wait(MessageReceived);
         }
 

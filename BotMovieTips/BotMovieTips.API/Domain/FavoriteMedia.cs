@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Botflix.Model
+namespace BotMovieTips.API.Domain
 {
     public class FavoriteMedia
     {

@@ -25,10 +25,10 @@ namespace Botflix
             };
 
             // Web API configuration and services
-            ContainerBuilder builder = new ContainerBuilder();
-            builder.RegisterType<IBotMovieTipsService>()
-                .As<BotMovieTipsService>()
-                .SingleInstance();
+            //ContainerBuilder builder = new ContainerBuilder();
+            //builder.RegisterType<IBotMovieTipsService>()
+            //    .As<BotMovieTipsService>()
+            //    .SingleInstance();
 
             // Web API routes
             config.MapHttpAttributeRoutes();

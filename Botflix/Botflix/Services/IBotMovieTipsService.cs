@@ -1,11 +1,12 @@
 ﻿using Botflix.Model;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Botflix.Services
 {
     interface IBotMovieTipsService
     {
-        List<FavoriteMedia> GetFavoriteMedias(string idUser);
-        void SendFavoriteMedia(FavoriteMedia favoriteMedia);
+        Task<List<FavoriteMedia>> GetFavoriteMedias(string idUser);
+        Task<bool> SendFavoriteMedia(FavoriteMedia favoriteMedia);
     }
 }
