@@ -20,7 +20,7 @@ namespace Botflix
             if (activity.Type == ActivityTypes.Message)
             {
                 ArgumentoStatic.Argument = activity;
-                await Conversation.SendAsync(activity, () => new BotflixDialog());
+                await Conversation.SendAsync(activity, () => new BotflixDialog(activity.Recipient.Id));
             }
             else
             {

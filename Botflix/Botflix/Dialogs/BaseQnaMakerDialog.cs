@@ -15,8 +15,8 @@ namespace Botflix.Dialogs
     public class BaseQnaMakerDialog : QnAMakerDialog
     {
         private Category category;
-        private string userId = "guhbigardi@gmail.com";
-        public BaseQnaMakerDialog(string category) : base(GetNewService())
+        private string userId;
+        public BaseQnaMakerDialog(string category, string userId) : base(GetNewService())
         {
             switch (category)
             {
@@ -30,6 +30,8 @@ namespace Botflix.Dialogs
                     this.category = Category.anyway;
                     break;
             }
+
+            this.userId = userId;
         }
 
         private static IQnAService[] GetNewService()

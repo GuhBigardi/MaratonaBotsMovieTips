@@ -17,10 +17,16 @@ namespace Botflix.Dialogs
     [Serializable]
     public class BotflixDialog : BaseLuisDialog<object>
     {
+        
 
         string qnaSubscriptionKey = ConfigurationManager.AppSettings["QnaSubscriptionKey"];
         string qnaKnowledgebaseId = ConfigurationManager.AppSettings["QnaKnowledgebaseId"];
-        string currentMedia = null;
+        string userId;
+
+        public BotflixDialog(string userId)
+        {
+            this.userId = userId;
+        }
 
         [LuisIntent("Cumprimento")]
         public async Task Cumprimento(IDialogContext context, LuisResult result)
@@ -33,7 +39,6 @@ namespace Botflix.Dialogs
         [LuisIntent("Favoritos")]
         public async Task Favoritos(IDialogContext context, LuisResult result)
         {
-            var userId = result?.Entities?.Where(x => x.Type == "userId").FirstOrDefault()?.Entity?.ToString();
             var mediaId = result?.Entities?.Where(x => x.Type == "mediaId").FirstOrDefault()?.Entity?.ToString();
 
             if (!(String.IsNullOrEmpty(userId) && String.IsNullOrEmpty(mediaId)))
@@ -56,7 +61,7 @@ namespace Botflix.Dialogs
             var entitie = result?.Entities?.FirstOrDefault()?.Entity?.ToString();
             var message = context.MakeMessage();
             message.Text = result.Query;
-            await context.Forward(new BaseQnaMakerDialog(entitie), AfterQnaDialog, message, CancellationToken.None);
+            await context.Forward(new BaseQnaMakerDialog(entitie, userId), AfterQnaDialog, message, CancellationToken.None);
         }
 
         private async Task AfterQnaDialog(IDialogContext context, IAwaitable<IMessageActivity> result)
