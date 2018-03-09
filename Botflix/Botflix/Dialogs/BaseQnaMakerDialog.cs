@@ -54,13 +54,13 @@ namespace Botflix.Dialogs
 
                 if (media != null)
                 {
-                    var card = new CardPersonalized().CreateCard(media, userId);
+                    var card = new CardPersonalizedService().CreateCard(media);
                     var msg = context.MakeMessage();
                     msg.Attachments.Add(card.ToAttachment());
 
                     await context.PostAsync(msg);
 
-                    //context.Done<string>("Oi");
+                    context.Done<string>(null);
 
                 }
             }

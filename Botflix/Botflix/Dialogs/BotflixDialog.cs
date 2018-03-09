@@ -36,6 +36,14 @@ namespace Botflix.Dialogs
             await qnaMaker.MessageReceivedAsync(context, Awaitable.FromItem(ArgumentoStatic.Argument));
         }
 
+        [LuisIntent("Apresentacao")]
+        public async Task Apresentacao(IDialogContext context, LuisResult result)
+        {
+            var qnaService = new QnAMakerService(new QnAMakerAttribute(qnaSubscriptionKey, qnaKnowledgebaseId, "Buguei aqui, pera!  ¯＼(º_o)/¯"));
+            var qnaMaker = new QnAMakerDialog(qnaService);
+            await qnaMaker.MessageReceivedAsync(context, Awaitable.FromItem(ArgumentoStatic.Argument));
+        }
+
         [LuisIntent("Favoritos")]
         public async Task Favoritos(IDialogContext context, LuisResult result)
         {
@@ -88,7 +96,7 @@ namespace Botflix.Dialogs
             msg.AttachmentLayout = AttachmentLayoutTypes.Carousel;
             foreach (var media in mediasRecommendated)
             {
-                var card = new CardPersonalized().CreateCard(media, userId);
+                var card = new CardPersonalizedService().CreateCard(media);
                 msg.Attachments.Add(card.ToAttachment());
             }
 

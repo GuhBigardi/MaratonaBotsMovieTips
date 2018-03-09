@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Botflix.Services
 {
-    public class CardPersonalized
+    public class CardPersonalizedService
     {
-        public HeroCard CreateCard(Media media, string userId)
+        public HeroCard CreateCard(Media media)
         {
             var heroCard = new HeroCard
             {
@@ -25,7 +25,7 @@ namespace Botflix.Services
                         DisplayText = "Gostei",
                         Title = "Gostei",
                         Type = ActionTypes.PostBack,
-                        Value = $"Sou o {userId} e gostei do Filme {media.id}"
+                        Value = $"gostei do Filme {media.id}"
 
                     }
 

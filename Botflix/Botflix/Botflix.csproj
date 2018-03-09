@@ -123,6 +123,7 @@
   <ItemGroup>
     <Content Include="default.htm" />
     <Content Include="Global.asax" />
+    <Content Include="Resources\BotflixPicture.png" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -146,8 +147,9 @@
     <Compile Include="Model\MediaSearchResult.cs" />
     <Compile Include="Model\RecommendationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AnnouncerService.cs" />
     <Compile Include="Services\BotMovieTipsService.cs" />
-    <Compile Include="Services\CardPersonalized.cs" />
+    <Compile Include="Services\CardPersonalizedService.cs" />
     <Compile Include="Services\IBotMovieTipsService.cs" />
     <Compile Include="Services\TheMovieDBService.cs" />
   </ItemGroup>

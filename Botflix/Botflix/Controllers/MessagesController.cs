@@ -1,8 +1,11 @@
-﻿using System.Net;
+﻿using System;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Botflix.Dialogs;
+using Botflix.Services;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
@@ -20,7 +23,7 @@ namespace Botflix
             if (activity.Type == ActivityTypes.Message)
             {
                 ArgumentoStatic.Argument = activity;
-                await Conversation.SendAsync(activity, () => new BotflixDialog(activity.Recipient.Id));
+                await Conversation.SendAsync(activity, () => new BotflixDialog(activity.From.Id));
             }
             else
             {
@@ -39,9 +42,7 @@ namespace Botflix
             }
             else if (message.Type == ActivityTypes.ConversationUpdate)
             {
-                // Handle conversation state changes, like members being added and removed
-                // Use Activity.MembersAdded and Activity.MembersRemoved and Activity.Action for info
-                // Not available in all channels
+                IntroductBotForNewUsers(message);
             }
             else if (message.Type == ActivityTypes.ContactRelationUpdate)
             {
@@ -57,6 +58,25 @@ namespace Botflix
             }
 
             return null;
+        }
+
+        private void IntroductBotForNewUsers(Activity activity)
+        {
+            if (activity.MembersAdded != null && activity.MembersAdded.Any())
+            {
+                var botId = activity.Recipient.Id;
+                var test = activity.MembersAdded.Select(m => m).Where(m => m.Id != botId).ToList();
+
+                if (activity.MembersAdded.Any(m => m.Id != botId))
+                {
+                    var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    var announcer = new AnnouncerService();
+                    var reply = activity.CreateReply();
+
+                    reply.Attachments.Add(announcer.GenerateIntroduction().ToAttachment());
+                    connector.Conversations.ReplyToActivityAsync(reply);
+                }
+            }
         }
     }
 }
