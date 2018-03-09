@@ -82,7 +82,7 @@ namespace Botflix.Services
         }
         public async Task<List<Media>> GetRecommendation(int id)
         {
-            var endpoint = $"/recommendations{id}?page=1&api_key={subscriptionKey}&{language}";
+            var endpoint = $"/movie/{id}/recommendations?page=1&api_key={subscriptionKey}&{language}";
             HttpResponseMessage result;
             try
             {

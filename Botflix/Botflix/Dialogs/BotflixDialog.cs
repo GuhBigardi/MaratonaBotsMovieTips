@@ -75,8 +75,6 @@ namespace Botflix.Dialogs
         {
             var movieService = new TheMovieDBService();
             var botMovieTipsService = new BotMovieTipsService();
-            var userId = "guhbigardi@gmail.com";
-
             var favoriteMedias = await botMovieTipsService.GetFavoriteMedias(userId);
 
             if(favoriteMedias.Count < 0)
@@ -87,6 +85,7 @@ namespace Botflix.Dialogs
             var mediasRecommendated = await movieService.GetRecommendation(favoriteMediaChoiced.IdMedia);
 
             var msg = context.MakeMessage();
+            msg.AttachmentLayout = AttachmentLayoutTypes.Carousel;
             foreach (var media in mediasRecommendated)
             {
                 var card = new CardPersonalized().CreateCard(media, userId);

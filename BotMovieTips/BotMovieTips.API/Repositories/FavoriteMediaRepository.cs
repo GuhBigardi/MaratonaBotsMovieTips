@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BotMovieTips.API.Repositories
 {
-    public class FavoriteMediaRepository
+    public class FavoriteMediaRepository : IFavoriteMediaRepository
     {
         public FavoriteMediaRepository()
         {

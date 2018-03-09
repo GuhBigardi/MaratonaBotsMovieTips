@@ -9,11 +9,10 @@ namespace BotMovieTips.API.Controllers
     [Route("api/[controller]")]
     public class AddFavoritesController : Controller
     {
-        private FavoriteMediaRepository favoriteMediaRepository;
-        public AddFavoritesController()
+        private IFavoriteMediaRepository favoriteMediaRepository;
+        public AddFavoritesController(IFavoriteMediaRepository favoriteMediaRepository)
         {
-            if (favoriteMediaRepository == null)
-                favoriteMediaRepository = new FavoriteMediaRepository();
+            this.favoriteMediaRepository = favoriteMediaRepository;
         }
 
         [HttpGet]
