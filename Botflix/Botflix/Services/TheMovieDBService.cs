@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Botflix.Extensions;
 using Botflix.Mocks;
 using Botflix.Model;
 using Newtonsoft.Json;
@@ -46,7 +47,7 @@ namespace Botflix.Services
                 var resultString = await result.Content.ReadAsStringAsync();
                 var mediaSearch = JsonConvert.DeserializeObject<MediaSearchResult>(resultString);
                 if (mediaType != Category.anyway)
-                    media = mediaSearch.results.Where(x => x.media_type == mediaType.ToString()).FirstOrDefault();
+                    media = mediaSearch.results.Where(x => x.media_type == EnumExtensions.GetDescription(mediaType)).FirstOrDefault();
                 else
                     media = mediaSearch.results.FirstOrDefault();
 
@@ -74,15 +75,12 @@ namespace Botflix.Services
             }
             catch (Exception ex)
             {
-                var resultString = MovieMock.Content;
-                var movie = JsonConvert.DeserializeObject<Movie>(resultString);
-
-                return movie;
+                throw ex;
             }
         }
-        public async Task<List<Media>> GetRecommendation(int id)
+        public async Task<List<Media>> GetRecommendation(int id, string mediaType)
         {
-            var endpoint = $"/movie/{id}/recommendations?page=1&api_key={subscriptionKey}&{language}";
+            var endpoint = $"/{mediaType}/{id}/recommendations?page=1&api_key={subscriptionKey}&{language}";
             HttpResponseMessage result;
             try
             {

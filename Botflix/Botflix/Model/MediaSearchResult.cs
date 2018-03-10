@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Bot.Builder.FormFlow;
+using System.Collections.Generic;
 
 namespace Botflix.Model
 {
@@ -22,8 +23,11 @@ namespace Botflix.Model
 
     public enum Category
     {
-        tv,
-        movie,
+        [Describe("tv")]
+        serie = 1,
+        [Describe("movie")]
+        filme,
+        [Describe("movie")]
         anyway
     }
 }

@@ -17,19 +17,7 @@ namespace Botflix.Dialogs
         private string userId;
         public BaseQnaMakerDialog(string category, string userId) : base(GetNewService())
         {
-            switch (category)
-            {
-                case "serie":
-                    this.category = Category.tv;
-                    break;
-                case "filme":
-                    this.category = Category.movie;
-                    break;
-                default:
-                    this.category = Category.anyway;
-                    break;
-            }
-
+            this.category = (Category)Enum.Parse(typeof(Category), category);
             this.userId = userId;
         }
 
@@ -60,7 +48,7 @@ namespace Botflix.Dialogs
 
                     await context.PostAsync(msg);
 
-                    context.Done<string>(null);
+                    context.Done(message);
 
                 }
             }
