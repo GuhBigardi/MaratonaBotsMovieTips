@@ -8,5 +8,6 @@ namespace Botflix.Services
     {
         Task<List<FavoriteMedia>> GetFavoriteMedias(string idUser);
         Task<bool> SendFavoriteMedia(FavoriteMedia favoriteMedia);
+        Task ConfigureAuthentication();
     }
 }

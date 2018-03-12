@@ -1,6 +1,7 @@
 ﻿using BotMovieTips.API.Domain;
 using BotMovieTips.API.Models;
 using BotMovieTips.API.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -15,6 +16,7 @@ namespace BotMovieTips.API.Controllers
             this.favoriteMediaRepository = favoriteMediaRepository;
         }
 
+        [Authorize("Bearer")]
         [HttpGet]
         public List<FavoriteMediaViewModel> Get(string idUser)
         {
@@ -30,6 +32,7 @@ namespace BotMovieTips.API.Controllers
             return favoriteMediasViewModel;
         }
 
+        [Authorize("Bearer")]
         [HttpPost]
         public void Post([FromBody]FavoriteMediaViewModel favoriteMediaViewModel)
         {

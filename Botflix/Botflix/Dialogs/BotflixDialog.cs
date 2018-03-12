@@ -22,10 +22,14 @@ namespace Botflix.Dialogs
         string qnaSubscriptionKey = ConfigurationManager.AppSettings["QnaSubscriptionKey"];
         string qnaKnowledgebaseId = ConfigurationManager.AppSettings["QnaKnowledgebaseId"];
         string userId;
+        [NonSerialized]
+        BotMovieTipsService botMovieTipsService;
 
         public BotflixDialog(string userId)
         {
             this.userId = userId;
+            botMovieTipsService = new BotMovieTipsService();
+
         }
 
         [LuisIntent("Cumprimento")]
@@ -42,25 +46,6 @@ namespace Botflix.Dialogs
             var qnaService = new QnAMakerService(new QnAMakerAttribute(qnaSubscriptionKey, qnaKnowledgebaseId, "Buguei aqui, pera!  ¯＼(º_o)/¯"));
             var qnaMaker = new QnAMakerDialog(qnaService);
             await qnaMaker.MessageReceivedAsync(context, Awaitable.FromItem(ArgumentoStatic.Argument));
-        }
-
-        [LuisIntent("Favoritos")]
-        public async Task Favoritos(IDialogContext context, LuisResult result)
-        {
-            var mediaId = result?.Entities?.Where(x => x.Type == "mediaId").FirstOrDefault()?.Entity?.ToString();
-
-            if (!(String.IsNullOrEmpty(userId) && String.IsNullOrEmpty(mediaId)))
-            {
-                var favoriteMedia = new FavoriteMedia()
-                {
-                    IdUser = userId,
-                    IdMedia = Convert.ToInt32(mediaId),
-                    TransationDate = DateTime.Now
-                };
-
-                var botMovieTipsService = new BotMovieTipsService();
-                await botMovieTipsService.SendFavoriteMedia(favoriteMedia);
-            }
         }
 
         [LuisIntent("Criticas")]
@@ -82,15 +67,42 @@ namespace Botflix.Dialogs
             return base.MessageReceived(context, item);
         }
 
+        [LuisIntent("Favoritos")]
+        public async Task Favoritos(IDialogContext context, LuisResult result)
+        {
+            var mediaId = result?.Entities?.Where(x => x.Type == "mediaId").FirstOrDefault()?.Entity?.ToString();
+
+            if (!(String.IsNullOrEmpty(userId) && String.IsNullOrEmpty(mediaId)))
+            {
+                var favoriteMedia = new FavoriteMedia()
+                {
+                    IdUser = userId,
+                    IdMedia = Convert.ToInt32(mediaId),
+                    TransationDate = DateTime.Now
+                };
+                if (botMovieTipsService == null)
+                    botMovieTipsService = new BotMovieTipsService();
+                await botMovieTipsService.ConfigureAuthentication();
+                await botMovieTipsService.SendFavoriteMedia(favoriteMedia);
+            }
+        }
+
+
         [LuisIntent("Sugestao")]
         public async Task Sugestao(IDialogContext context, LuisResult result)
         {
             var entity = result?.Entities?.Where(x => x.Type == "categoria").FirstOrDefault()?.Entity?.ToString();
             Category category = Category.anyway;
+
             if (!String.IsNullOrEmpty(entity))
                 category = (Category)Enum.Parse(typeof(Category), entity);
+
             var movieService = new TheMovieDBService();
-            var botMovieTipsService = new BotMovieTipsService();
+
+            if (botMovieTipsService == null)
+                botMovieTipsService = new BotMovieTipsService();
+
+            await botMovieTipsService.ConfigureAuthentication();
             var favoriteMedias = await botMovieTipsService.GetFavoriteMedias(userId);
 
             if (favoriteMedias.Count == 0)
